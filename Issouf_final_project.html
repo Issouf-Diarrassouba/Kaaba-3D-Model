@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<head> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    canvas {
+        background-image: url('thi.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+      
+    }
+</style>
+
+<style>
+
+    button {
+        background-color: #3a3d925f;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #25575b;
+    }
+
+    button:focus {
+        outline: none;
+    }
+</style>
+</head>
+
+
+<button id = "go">Go Rotation</button>
+<button id = "stop">Stop Rotation </button>
+<button id="reverse">Reverse Rotation</button>
+<button id="plusspeed">Increase Speed</button>
+<button id="downspeed">Decrease Speed</button>
+
+
+<button id="playButton">Play / Stop Audio</button>
+<audio id="audio" src="Issouf_audio.mp3"></audio>
+
+<script>
+    document.getElementById('playButton').addEventListener('click', function() {
+        var audio = document.getElementById('audio');
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
+</script>
+
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+attribute  vec4 vColor;
+attribute  vec2 vTexCoord;
+
+varying vec4 fColor;
+varying vec2 fTexCoord;
+
+uniform vec3 theta;
+
+void main()
+{
+    
+
+    vec3 angles = radians( theta );
+    vec3 c = cos( angles );
+    vec3 s = sin( angles );
+    mat4 ry = mat4( c.y, 0.0, -s.y, 0.0,
+		    0.0, 1.0,  0.0, 0.0,
+		    s.y, 0.0,  c.y, 0.0,
+		    0.0, 0.0,  0.0, 1.0 );
+
+
+    fColor = vColor;
+    fTexCoord = vTexCoord;
+    gl_Position = ry * vPosition;
+    gl_Position.z = -gl_Position.z;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+varying vec4 fColor;
+varying  vec2 fTexCoord;
+
+uniform sampler2D texture;
+
+void
+main()
+{
+    gl_FragColor = fColor*texture2D( texture, fTexCoord );
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="Issouf_Final_Project.js"></script>
+
+
+<body>
+
+<canvas id="gl-canvas" width="750" height="750">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<img id="texture" src="kbbbn.png" style="display: none;">
+
+
+</body>
+</html>
